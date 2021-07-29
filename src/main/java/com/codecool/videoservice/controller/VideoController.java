@@ -1,10 +1,11 @@
 package com.codecool.videoservice.controller;
 
-import com.codecool.videoservice.VO.ResponseTemplateVO;
+import com.codecool.videoservice.VO.VideoWithRecommendations;
 import com.codecool.videoservice.entity.Video;
 import com.codecool.videoservice.service.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,15 +24,15 @@ public class VideoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseTemplateVO getVideoWithRecommendations(@PathVariable Long id) {
+    public VideoWithRecommendations getVideoWithRecommendations(@PathVariable Long id) {
         log.info("Inside getVideoWithRecommendations of VideoController.");
         return videoService.getVideoWithRecommendations(id);
     }
 
-    @PostMapping("")
-    public Video updateVideo(@RequestBody Video video) {
-        log.info("Updating video !");
-        videoService.updateVideo(video);
-        return video;
+    @PutMapping("/{id}")
+    public ResponseEntity<Video> updateVideo(@RequestBody Video video) {
+        log.info("Updating video with id:" + video.getId());
+//        Video uvideoService.updateVideo(video);
+//        return new ResponseEntity<>()
     }
 }

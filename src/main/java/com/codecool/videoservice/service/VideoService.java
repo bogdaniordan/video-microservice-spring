@@ -1,6 +1,6 @@
 package com.codecool.videoservice.service;
 
-import com.codecool.videoservice.VO.ResponseTemplateVO;
+import com.codecool.videoservice.VO.VideoWithRecommendations;
 import com.codecool.videoservice.VO.VideoRecommendation;
 import com.codecool.videoservice.entity.Video;
 import com.codecool.videoservice.repository.VideoRepository;
@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,27 +27,61 @@ public class VideoService {
         return videoRepository.findAll();
     }
 
-    public ResponseTemplateVO getVideoWithRecommendations(Long id) {
-        ResponseTemplateVO vo = new ResponseTemplateVO();
-        Video video = videoRepository.findById(id).get();
+    public VideoWithRecommendations getVideoWithRecommendations(Long id) {
+        VideoWithRecommendations videoWithRecommendations = new VideoWithRecommendations();
+        Video video = videoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Could not find video with id: " + id));
         List<VideoRecommendation> videoRecommendations = new ArrayList<>();
         for(Long recommendationId: video.getRecommendationsId()) {
-            videoRecommendations.add(restTemplate.getForObject("http://localhost:9002/video-recommendations/" + recommendationId, VideoRecommendation.class));
+            videoRecommendations.add(restTemplate.getForObject("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/" + recommendationId, VideoRecommendation.class));
         }
-        vo.setVideo(video);
-        vo.setVideoRecommendations(videoRecommendations);
-        return vo;
+        videoWithRecommendations.setVideo(video);
+        videoWithRecommendations.setVideoRecommendations(videoRecommendations);
+        return videoWithRecommendations;
     }
 
-    public void updateVideo(Video video) {
-        List<Long> newRecommendationsIds = video.getRecommendationsId();
-        for (Long id: newRecommendationsIds) {
-            VideoRecommendation newVideoRecommendation = restTemplate.getForObject("http://localhost:9002/video-recommendations/" + id, VideoRecommendation.class);
-            VideoRecommendation updatedVideoRecommendation = new VideoRecommendation(newVideoRecommendation.getId(),
-                    newVideoRecommendation.getRating(), newVideoRecommendation.getComment(), video.getId());
-            restTemplate.put("http://localhost:9002/video-recommendations/", updatedVideoRecommendation);
-        }
-        videoRepository.save(video);
+    public VideoWithRecommendations updateVideo(Video video, Long id) {
+        Video updatedVideo = updateVideoInDB(video, id);
+
+        List<VideoRecommendation> updatedRecommendations = updateVideoRecommendations(updatedVideo);
+
+        VideoWithRecommendations videoWithRecommendations = new VideoWithRecommendations();
+        videoWithRecommendations.setVideo(updatedVideo);
+        videoWithRecommendations.setVideoRecommendations(updatedRecommendations);
+        return videoWithRecommendations;
+//        List<Long> newRecommendationsIds = video.getRecommendationsId();
+//        for (Long id: newRecommendationsIds) {
+//            VideoRecommendation newVideoRecommendation = restTemplate.getForObject("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/" + id, VideoRecommendation.class);
+//            if (newVideoRecommendation != null) {
+//                VideoRecommendation updatedVideoRecommendation = new VideoRecommendation(newVideoRecommendation.getId(),
+//                        newVideoRecommendation.getRating(), newVideoRecommendation.getComment(), video.getId());
+//                restTemplate.put("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/", updatedVideoRecommendation);
+//            }
+//        }
+//        videoRepository.save(video);
     }
+
+    private Video updateVideoInDB(Video video, Long id) {
+        Video updatedVideo = videoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Could not find video with id: "+ id));
+        updatedVideo.setName(video.getName());
+        updatedVideo.setUrl(updatedVideo.getUrl());
+        updatedVideo.setRecommendationsId(video.getRecommendationsId());
+        return videoRepository.save(updatedVideo);
+    }
+
+    private List<VideoRecommendation> updateVideoRecommendations(Video updatedVideo) {
+        List<VideoRecommendation> videoRecommendations = new ArrayList<>();
+        updatedVideo.getRecommendationsId().forEach( recommendationId -> {
+            VideoRecommendation videoRecommendation = restTemplate.getForObject("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/" + recommendationId, VideoRecommendation.class);
+            if (videoRecommendation != null) {
+                videoRecommendation.setVideoId(updatedVideo.getId());
+                restTemplate.put("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/", videoRecommendation);
+                videoRecommendations.add(videoRecommendation);
+            }
+        });
+        return videoRecommendations;
+    }
+
 }
 

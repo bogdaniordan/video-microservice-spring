@@ -1,5 +1,6 @@
 package com.codecool.videoservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ public class Video {
     private Long id;
     private String name;
     private String url;
+
+    @JsonIgnore
     @ElementCollection
     private List<Long> recommendationsId;
 }

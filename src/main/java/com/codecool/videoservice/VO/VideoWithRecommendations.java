@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseTemplateVO {
+public class VideoWithRecommendations {
     private Video video;
     private List<VideoRecommendation> videoRecommendations;
 }
