@@ -1,5 +1,6 @@
 package com.codecool.videoservice.controller;
 
+import com.codecool.videoservice.VO.VideoRecommendation;
 import com.codecool.videoservice.VO.VideoWithRecommendations;
 import com.codecool.videoservice.entity.Video;
 import com.codecool.videoservice.service.VideoService;
@@ -42,5 +43,19 @@ public class VideoController {
         log.info("Saving video...");
         Video newVideo = videoService.addVideo(video);
         return new ResponseEntity<>(newVideo, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/add-recommendation/{videoId}")
+    public ResponseEntity<VideoRecommendation> addRecommendation(@RequestBody VideoRecommendation videoRecommendation,
+                                                                 @PathVariable Long videoId) {
+        VideoRecommendation newRecommendation = videoService.addRecommendation(videoRecommendation, videoId);
+        return new ResponseEntity<>(newRecommendation, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/all-recommendations/{videoId}")
+    public ResponseEntity<List<VideoRecommendation>> getAllRecommendationsForVideo(@PathVariable Long videoId) {
+        log.info("Fetching all video recommendations for video with videoId: " + videoId);
+        List<VideoRecommendation> recommendationList = videoService.getRecommendationsByVideoId(videoId);
+        return new ResponseEntity<>(recommendationList, HttpStatus.OK);
     }
 }

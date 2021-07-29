@@ -53,5 +53,18 @@ public class VideoService {
     public Video addVideo(Video video) {
         return videoRepository.save(video);
     }
+
+
+    public VideoRecommendation addRecommendation(VideoRecommendation videoRecommendation, Long videoId) {
+        restTemplate.postForObject("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/save-by-video/" + videoId, videoRecommendation, VideoRecommendation.class);
+        return videoRecommendation;
+    }
+
+    public List<VideoRecommendation> getRecommendationsByVideoId(Long videoId) {
+        ResponseEntity<VideoRecommendation[]> response = restTemplate.getForEntity("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/by-video-id/" + videoId, VideoRecommendation[].class);
+        VideoRecommendation[] videoRecommendations = response.getBody();
+        assert videoRecommendations != null;
+        return List.of(videoRecommendations);
+    }
 }
 
