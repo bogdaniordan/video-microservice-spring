@@ -19,8 +19,4 @@ public class Video {
     private Long id;
     private String name;
     private String url;
-
-    @JsonIgnore
-    @ElementCollection
-    private List<Long> recommendationsId;
 }

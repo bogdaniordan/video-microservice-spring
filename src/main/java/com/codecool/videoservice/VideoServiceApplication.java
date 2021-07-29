@@ -27,9 +27,9 @@ public class VideoServiceApplication {
 	@Bean
 	CommandLineRunner initDatabase(VideoRepository repository) {
 		return args -> {
-			repository.save(new Video(1L, "Deploy NodeJS", "https://youtube.com/watch?v=uEVmD6n8Il0", Arrays.asList(1L, 2L ,3L)));
-			repository.save(new Video(2L, "CSS Tricks", "https://www.youtube.com/watch?v=Qhaz36TZG5Y", Arrays.asList(4L, 5L ,6L)));
-			repository.save(new Video(3L, "HTML tutorial", "https://www.youtube.com/watch?v=ZtyMdRzvi0w", Arrays.asList(7L, 8L ,9L)));
+			repository.save(new Video(1L, "Deploy NodeJS", "https://youtube.com/watch?v=uEVmD6n8Il0"));
+			repository.save(new Video(2L, "CSS Tricks", "https://www.youtube.com/watch?v=Qhaz36TZG5Y"));
+			repository.save(new Video(3L, "HTML tutorial", "https://www.youtube.com/watch?v=ZtyMdRzvi0w"));
 		};
 	}
 

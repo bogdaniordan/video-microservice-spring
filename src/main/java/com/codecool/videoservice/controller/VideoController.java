@@ -31,9 +31,16 @@ public class VideoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VideoWithRecommendations> updateVideo(@RequestBody Video video, @PathVariable Long id) {
+    public ResponseEntity<Video> updateVideo(@RequestBody Video video, @PathVariable Long id) {
         log.info("Updating recommendations of video and video with id:" + video.getId());
-        VideoWithRecommendations updatedVideo = videoService.updateVideo(video, id);
+        Video updatedVideo = videoService.updateVideo(video, id);
         return new ResponseEntity<>(updatedVideo, HttpStatus.OK);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Video> addVideo(@RequestBody Video video) {
+        log.info("Saving video...");
+        Video newVideo = videoService.addVideo(video);
+        return new ResponseEntity<>(newVideo, HttpStatus.CREATED);
     }
 }

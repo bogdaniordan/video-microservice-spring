@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VideoRecommendation {
-
     private Long id;
     private int rating;
     private String comment;
