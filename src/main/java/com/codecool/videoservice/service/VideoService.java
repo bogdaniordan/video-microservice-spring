@@ -66,5 +66,11 @@ public class VideoService {
         assert videoRecommendations != null;
         return List.of(videoRecommendations);
     }
+
+    public Video getVideoById(Long id) {
+        return videoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Couldn't find video with id: " + id));
+
+    }
 }
 

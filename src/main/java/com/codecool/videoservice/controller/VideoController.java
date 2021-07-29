@@ -25,6 +25,12 @@ public class VideoController {
         return new ResponseEntity<>(videoService.getAllVideos(), HttpStatus.OK);
     }
 
+    @GetMapping("/video-by-id/{id}")
+    public ResponseEntity<Video> getVideoById(@PathVariable Long id) {
+        Video video = videoService.getVideoById(id);
+        return new ResponseEntity<>(video, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VideoWithRecommendations> getVideoWithRecommendations(@PathVariable Long id) {
         log.info("Inside getVideoWithRecommendations of VideoController.");
@@ -58,4 +64,5 @@ public class VideoController {
         List<VideoRecommendation> recommendationList = videoService.getRecommendationsByVideoId(videoId);
         return new ResponseEntity<>(recommendationList, HttpStatus.OK);
     }
+
 }
