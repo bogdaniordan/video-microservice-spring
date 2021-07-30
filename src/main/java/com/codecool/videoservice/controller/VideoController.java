@@ -70,7 +70,7 @@ public class VideoController {
     @PutMapping("/update-recommendation/{id}")
     public ResponseEntity<VideoRecommendation> updateRecommendation(@RequestBody VideoRecommendation videoRecommendation, @PathVariable Long id) {
         log.info("Updating recommendation with id: " + id);
-        updateVideo(videoRecommendation);
+        videoService.updateVideoRecommendation(videoRecommendation, id);
         return new ResponseEntity<>(videoRecommendation, HttpStatus.OK);
     }
 
