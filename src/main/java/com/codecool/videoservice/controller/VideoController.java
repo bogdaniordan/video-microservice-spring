@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/videos")
 @Slf4j
+@CrossOrigin(origins = "*")
 public class VideoController {
 
     @Autowired
@@ -51,6 +52,7 @@ public class VideoController {
         return new ResponseEntity<>(newVideo, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/add-recommendation/{videoId}")
     public ResponseEntity<VideoRecommendation> addRecommendation(@RequestBody VideoRecommendation videoRecommendation,
                                                                  @PathVariable Long videoId) {
@@ -63,6 +65,13 @@ public class VideoController {
         log.info("Fetching all video recommendations for video with videoId: " + videoId);
         List<VideoRecommendation> recommendationList = videoService.getRecommendationsByVideoId(videoId);
         return new ResponseEntity<>(recommendationList, HttpStatus.OK);
+    }
+
+    @PutMapping("/update-recommendation/{id}")
+    public ResponseEntity<VideoRecommendation> updateRecommendation(@RequestBody VideoRecommendation videoRecommendation, @PathVariable Long id) {
+        log.info("Updating recommendation with id: " + id);
+        updateVideo(videoRecommendation);
+        return new ResponseEntity<>(videoRecommendation, HttpStatus.OK);
     }
 
 }

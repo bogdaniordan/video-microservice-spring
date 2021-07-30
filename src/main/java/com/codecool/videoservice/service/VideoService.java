@@ -72,5 +72,9 @@ public class VideoService {
                 .orElseThrow(() -> new IllegalArgumentException("Couldn't find video with id: " + id));
 
     }
+
+    public void updateVideoRecommendation(VideoRecommendation videoRecommendation, Long id) {
+        restTemplate.put("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/" + id, videoRecommendation, VideoRecommendation.class);
+    }
 }
 
