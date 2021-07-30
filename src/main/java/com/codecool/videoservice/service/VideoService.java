@@ -76,5 +76,9 @@ public class VideoService {
     public void updateVideoRecommendation(VideoRecommendation videoRecommendation, Long id) {
         restTemplate.put("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/" + id, videoRecommendation, VideoRecommendation.class);
     }
+
+    public VideoRecommendation getRecommendation(Long id) {
+        return restTemplate.getForObject("http://VIDEO-RECOMMENDATION-SERVICE/video-recommendations/" + id, VideoRecommendation.class);
+    }
 }
 

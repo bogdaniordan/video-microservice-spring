@@ -74,4 +74,11 @@ public class VideoController {
         return new ResponseEntity<>(videoRecommendation, HttpStatus.OK);
     }
 
+    @GetMapping("/recommendation-by-id/{id}")
+    public ResponseEntity<VideoRecommendation> getRecommendationById(@PathVariable Long id) {
+        log.info("Getting recommendation with id: " + id);
+        VideoRecommendation videoRecommendation = videoService.getRecommendation(id);
+        return new ResponseEntity<>(videoRecommendation, HttpStatus.OK);
+    }
+
 }
